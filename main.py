@@ -1,5 +1,28 @@
 from bs4 import BeautifulSoup as bs
 import requests
+from datetime import datetime
+from openpyxl import load_workbook
+from openpyxl.styles import Font, Alignment
+from openpyxl.cell.cell import Cell
+
+
+# Applies formatting to the data to match the sheet
+def apply_formatting(data, ws):
+    for d in data:
+        d = Cell(ws, column='A', row=1, value=d)
+        d.font = Font(name='Calibri', size=9)
+        d.alignment = Alignment(horizontal='center',
+                                vertical='center',
+                                wrap_text=True)
+        yield d
+
+
+def insert_data(data):
+    wb = load_workbook('data/database.xlsx')
+    ws = wb.active
+    ws.append(apply_formatting(data, ws))
+    wb.save('data/database.xlsx')
+
 
 def parse_content(url):
     r = requests.get(url)
