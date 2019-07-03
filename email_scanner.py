@@ -13,5 +13,6 @@ def acquire_email(subject):
         for uid, message_data in client.fetch(search, 'RFC822').items():
             email_message = email.message_from_bytes(message_data[b'RFC822'])
             
-            # print(email_message.get_payload()[1])
-            return email_message.get_payload()[1]
+            for part in email_message.walk():
+                if part.get_content_type() == 'text/html':
+                    return part.get_payload(decode=True)
