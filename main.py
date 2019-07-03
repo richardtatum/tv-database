@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup as bs
 import requests
-from datetime import datetime
+from datetime import datetime, date
 from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.cell.cell import Cell
@@ -33,7 +33,10 @@ def parse_content(url):
     link_data = soup.find('div', class_='profile_tweet_date_country').get_text().split()
 
     # Format the date to requested style
-    time = datetime.strptime(link_data[0], '%d/%m/%Y').strftime('%d.%m.%y')
+    try:
+        time = datetime.strptime(link_data[0], '%d/%m/%Y').strftime('%d.%m.%y')
+    except ValueError:
+        time = date.today().strftime('%d.%m.%y')
 
     # Appending data to a list (required for openpyxl.append())
     data.append(time)
