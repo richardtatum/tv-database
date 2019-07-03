@@ -44,11 +44,12 @@ def parse_content(url):
     insert_data(data)
 
 
+# Removes duplicates whilst maintaining order
 def remove_duplicates(list_w_duplicates):
-    # Removes duplicates whilst maintaining order
     return list(dict.fromkeys(list_w_duplicates))
 
 
+# Picks out the correct content links from the email
 def acquire_links():
     email = open('data/email.htm', encoding='utf16')
     e_soup = bs(email.read(), 'html.parser')
