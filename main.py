@@ -44,7 +44,20 @@ def parse_content(url):
     insert_data(data)
 
 
-urls = ['http://tvbizz.net/newsitemsocial?newsId=128888','http://tvbizz.net/newsitemsocial?newsId=128937',
-        'http://tvbizz.net/newsitemsocial?newsId=128936', 'http://tvbizz.net/newsitemsocial?newsId=128931']
-for url in urls:
+def remove_duplicates(list_w_duplicates):
+    # Removes duplicates whilst maintaining order
+    return list(dict.fromkeys(list_w_duplicates))
+
+
+def acquire_links():
+    email = open('data/email.htm', encoding='utf16')
+    e_soup = bs(email.read(), 'html.parser')
+
+    l = []
+    for link in e_soup.find_all('a'):
+        if 'tvbizz.net/newsitemsocial' in link.get('href'):
+            l.append(link.get('href'))
+
+    return remove_duplicates(l)
+
     parse_content(url)
