@@ -60,4 +60,7 @@ def acquire_links():
 
     return remove_duplicates(l)
 
+
+for url in acquire_links():
+    print(f'Added data from: {url}')
     parse_content(url)
