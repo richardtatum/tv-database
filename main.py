@@ -4,6 +4,7 @@ from datetime import datetime, date
 from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.cell.cell import Cell
+from email_scanner import acquire_email
 
 
 # Applies formatting to the data to match the sheet
@@ -54,8 +55,10 @@ def remove_duplicates(list_w_duplicates):
 
 # Picks out the correct content links from the email
 def acquire_links():
-    email = open('data/email.htm', encoding='utf16')
-    e_soup = bs(email.read(), 'html.parser')
+    # email = open('data/email.htm', encoding='utf16')
+    # e_soup = bs(email.read(), 'html.parser')
+    email = acquire_email('TVBIZZ')
+    e_soup = bs(email, 'html.parser')
 
     l = []
     for link in e_soup.find_all('a'):
@@ -64,6 +67,7 @@ def acquire_links():
 
     return remove_duplicates(l)
 
+acquire_links()
 
 for url in acquire_links():
     print(f'Added data from: {url}')
