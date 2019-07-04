@@ -13,7 +13,7 @@ class EmailConnect:
         self.login()
 
     def login(self):
-        print(f'Logging in as {self.username.')
+        print(f'Logging in as {self.username}.')
         client = IMAPClient(self.host, use_uid=True, ssl=True)
         client.login(self.username, self.password)
         self.client = client
