@@ -1,6 +1,8 @@
 from imapclient import IMAPClient
 from dotenv import load_dotenv
+import dropbox
 import email
+import os
 
 load_dotenv()
 
@@ -30,3 +32,22 @@ class EmailConnect:
             for part in email_message.walk():
                 if part.get_content_type() == 'text/html':
                     return part.get_payload(decode=True)
+
+
+class Dropbox:
+    def __init__(self, token):
+        self.token = token
+        self.login()
+
+    def login(self):
+        print(f'Logging into Dropbox...')
+        client = dropbox.Dropbox(self.token)
+        self.client = client
+
+    def upload(self, local, remote):
+        with open(local, 'rb') as f:
+            self.client.files_upload(f.read(), remote, mode=dropbox.files.WriteMode.overwrite)
+        print(f'File {local} uploaded to {remote}')
+
+    def download(self, remote, local):
+        pass
