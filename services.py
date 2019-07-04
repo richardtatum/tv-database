@@ -47,7 +47,13 @@ class Dropbox:
     def upload(self, local, remote):
         with open(local, 'rb') as f:
             self.client.files_upload(f.read(), remote, mode=dropbox.files.WriteMode.overwrite)
-        print(f'File {local} uploaded to {remote}')
+        print(f'File {local} uploaded to {remote}.')
 
-    def download(self, remote, local):
-        pass
+    def download(self, local, remote):
+        try:
+            self.client.files_download_to_file(local, remote)
+        except dropbox.exceptions.ApiError as err:
+            print(f'Lookup error: {err}')
+            pass
+
+        print(f'File {remote} downloaded to {local}.')
