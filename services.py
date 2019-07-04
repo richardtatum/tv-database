@@ -52,8 +52,9 @@ class Dropbox:
     def download(self, local, remote):
         try:
             self.client.files_download_to_file(local, remote)
+            print(f'File {remote} downloaded to {local}.')
         except dropbox.exceptions.ApiError as err:
             print(f'Lookup error: {err}')
+            print('Skipping...')
             pass
 
-        print(f'File {remote} downloaded to {local}.')
