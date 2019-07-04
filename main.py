@@ -1,11 +1,11 @@
 from bs4 import BeautifulSoup as bs
-import requests
-import os
 from datetime import datetime, date
 from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.cell.cell import Cell
 from email_scanner import EmailConnect
+import requests
+import os
 
 
 # Applies formatting to the data to match the sheet
@@ -13,12 +13,13 @@ def apply_formatting(data, ws):
     for d in data:
         d = Cell(ws, column='A', row=1, value=d)
         d.font = Font(name='Calibri', size=9)
-        d.alignment = Alignment(horizontal='center',
-                                vertical='center',
-                                wrap_text=True)
+        d.alignment = Alignment(
+            horizontal='center',
+            vertical='center',
+            wrap_text=True
+        )
         yield d
 
-    d[2].alignment = Alignment(horizontal='justify')
 
 def insert_data(data):
     wb = load_workbook('data/database.xlsx')
@@ -57,9 +58,11 @@ def remove_duplicates(list_w_duplicates):
 
 # Picks out the correct content links from the email
 def acquire_links(subject):
+    # Acquire the ID of the email
     ids = gmail.get_id_by_subject(subject)
-    html = gmail.get_html(ids)
 
+    # Pull the raw HTML
+    html = gmail.get_html(ids)
     e_soup = bs(html, 'html.parser')
 
     links = []
@@ -71,7 +74,12 @@ def acquire_links(subject):
 
 
 if __name__ == '__main__':
-    gmail = EmailConnect(os.getenv('IMAP_HOST'), os.getenv('IMAP_USER'), os.getenv('APP_PASS'))
+    # Create a instance and login
+    gmail = EmailConnect(
+        os.getenv('IMAP_HOST'),
+        os.getenv('IMAP_USER'),
+        os.getenv('APP_PASS'),
+    )
     link_list = acquire_links('TVBIZZ')
     for url in link_list:
         parse_content(url)

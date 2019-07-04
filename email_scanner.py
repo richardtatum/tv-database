@@ -1,7 +1,7 @@
 from imapclient import IMAPClient
 from dotenv import load_dotenv
-import os
 import email
+
 load_dotenv()
 
 
