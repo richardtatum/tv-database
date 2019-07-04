@@ -5,14 +5,28 @@ import email
 load_dotenv()
 
 
-def acquire_email(subject):
-    with IMAPClient(host=os.getenv('IMAP_HOST'), use_uid=True, ssl=True) as client:
-        client.login(os.getenv('IMAP_USER'), os.getenv('APP_PASS'))
-        inbox = client.select_folder('INBOX')
-        search = client.search(['SUBJECT', subject])
-        for uid, message_data in client.fetch(search, 'RFC822').items():
+class EmailConnect:
+    def __init__(self, host, username, password):
+        self.host = host
+        self.username = username
+        self.password = password
+        self.login()
+
+    def login(self):
+        print(f'Logging in as {self.username.')
+        client = IMAPClient(self.host, use_uid=True, ssl=True)
+        client.login(self.username, self.password)
+        self.client = client
+
+    def get_id_by_subject(self, subject, folder='INBOX'):
+        self.client.select_folder(folder)
+        self.search = ['SUBJECT', subject]
+        return self.client.search(self.search)
+
+    def get_html(self, email_id):
+        for uid, message_data in self.client.fetch(email_id, 'RFC822').items():
             email_message = email.message_from_bytes(message_data[b'RFC822'])
-            
+
             for part in email_message.walk():
                 if part.get_content_type() == 'text/html':
                     return part.get_payload(decode=True)
