@@ -61,6 +61,12 @@ def acquire_links(subject):
     # Acquire the ID of the email
     ids = gmail.get_id_by_subject(subject)
 
+    if len(ids) < 1:
+        print(f'No emails found matching the requested subject <{subject}>.')
+        print('Exiting...')
+        exit()
+
+
     # Pull the raw HTML
     html = gmail.get_html(ids)
     e_soup = bs(html, 'html.parser')
