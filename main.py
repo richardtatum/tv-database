@@ -80,14 +80,18 @@ def acquire_links(subject):
 
 if __name__ == '__main__':
     # Create a instance and login
+    box = Dropbox(os.getenv('DBX_TOKEN'))
+    box.download('data/database.xlsx', '/database.xlsx')
     gmail = EmailConnect(
         os.getenv('IMAP_HOST'),
         os.getenv('IMAP_USER'),
         os.getenv('APP_PASS'),
     )
+
     link_list = acquire_links('TVBIZZ')
     for url in link_list:
         parse_content(url)
     print(f'Added data from {len(link_list)} links.')
-    d = Dropbox(os.getenv('DBX_TOKEN'))
-    d.upload('data/database.xlsx', '/database.xlsx')
+
+    box.upload('data/database.xlsx', '/database.xlsx')
+
