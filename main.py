@@ -3,7 +3,7 @@ from datetime import datetime, date
 from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.cell.cell import Cell
-from email_scanner import EmailConnect
+from services import EmailConnect, Dropbox
 import requests
 import os
 
@@ -66,7 +66,6 @@ def acquire_links(subject):
         print('Exiting...')
         exit()
 
-
     # Pull the raw HTML
     html = gmail.get_html(ids)
     e_soup = bs(html, 'html.parser')
@@ -90,3 +89,5 @@ if __name__ == '__main__':
     for url in link_list:
         parse_content(url)
     print(f'Added data from {len(link_list)} links.')
+    d = Dropbox(os.getenv('DBX_TOKEN'))
+    d.upload('data/database.xlsx', '/database.xlsx')
