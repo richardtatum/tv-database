@@ -39,6 +39,7 @@ def parse_content(url):
     # Format the date to requested style
     try:
         time = link_data[0]
+        datetime.strptime(time, '%d/%m/%Y') # Used to check the format of the time
     except ValueError:
         time = date.today().strftime('%d/%m/%Y')
 
