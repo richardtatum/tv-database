@@ -61,19 +61,25 @@ def acquire_links(subject):
     # Acquire the ID of the email
     ids = gmail.get_id_by_subject(subject)
 
+    # If no ID's are returned, logout and exit
     if len(ids) < 1:
         print(f'No emails found matching the requested subject <{subject}>.')
         print('Exiting...')
+        gmail.logout()
         exit()
 
     # Pull the raw HTML
     html = gmail.get_html(ids)
     e_soup = bs(html, 'html.parser')
 
+    # Adds correct links to a masterlist
     links = []
     for link in e_soup.find_all('a'):
         if 'tvbizz.net/newsitemsocial' in link.get('href'):
             links.append(link.get('href'))
+
+    # Delete the email once we have finished
+    gmail.delete(ids)
 
     return remove_duplicates(links)
 
@@ -82,6 +88,7 @@ if __name__ == '__main__':
     # Create a instance and login
     box = Dropbox(os.getenv('DBX_TOKEN'))
     box.download('data/database.xlsx', '/database.xlsx')
+
     gmail = EmailConnect(
         os.getenv('IMAP_HOST'),
         os.getenv('IMAP_USER'),
@@ -94,4 +101,5 @@ if __name__ == '__main__':
     print(f'Added data from {len(link_list)} links.')
 
     box.upload('data/database.xlsx', '/database.xlsx')
+
 
