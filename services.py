@@ -33,6 +33,14 @@ class EmailConnect:
                 if part.get_content_type() == 'text/html':
                     return part.get_payload(decode=True)
 
+    def delete(self, ids):
+        self.client.delete_messages(ids)
+        print(f'{len(ids)} message/s deleted.')
+
+    def logout(self):
+        self.client.logout()
+        print(f'{self.username} logged out.')
+
 
 class Dropbox:
     def __init__(self, token):
