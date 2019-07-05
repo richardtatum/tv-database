@@ -38,9 +38,9 @@ def parse_content(url):
 
     # Format the date to requested style
     try:
-        time = datetime.strptime(link_data[0], '%d/%m/%Y').strftime('%d.%m.%y')
+        time = link_data[0]
     except ValueError:
-        time = date.today().strftime('%d.%m.%y')
+        time = date.today().strftime('%d/%m/%Y')
 
     # Appending data to a list (required for openpyxl.append())
     data.append(time)
