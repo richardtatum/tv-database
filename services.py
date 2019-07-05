@@ -2,7 +2,6 @@ from imapclient import IMAPClient
 from dotenv import load_dotenv
 import dropbox
 import email
-import os
 
 load_dotenv()
 
