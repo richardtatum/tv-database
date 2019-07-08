@@ -46,7 +46,7 @@ def parse_content(url):
     # Appending data to a list (required for openpyxl.append())
     data.append(time)
     data.append(' '.join(link_data[2:]))
-    data.append('\n' + soup.find('div', class_='profile_tweet_content').get_text() + '\n')
+    data.append(soup.find('div', class_='profile_tweet_content').get_text())
 
     # Pass data to worksheet
     insert_data(data)
