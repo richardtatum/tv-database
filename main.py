@@ -7,6 +7,8 @@ from services import EmailConnect, Dropbox
 import requests
 import os
 
+LOCAL_FILE = 'data/International Format Tracker.xlsx'
+REMOTE_FILE = '/International Format Tracker.xlsx'
 
 # Applies formatting to the data to match the sheet
 def apply_formatting(data, ws):
@@ -92,8 +94,9 @@ if __name__ == '__main__':
 
     # Same for Dropbox
     # box = Dropbox(os.getenv('DBX_TOKEN'))
-    # box.download('data/database.xlsx', '/database.xlsx')
+    box.download(LOCAL_FILE, REMOTE_FILE)
 
+    wb = load_workbook(LOCAL_FILE)
     # Aquire all the data from each link and add it to the file
     link_list = acquire_links('Latest headlines on TVBIZZ')
     for url in link_list:
@@ -104,4 +107,4 @@ if __name__ == '__main__':
     wb.save('data/International Format Tracker.xlsx')
 
     # Upload to dropbox
-    # box.upload('data/database.xlsx', '/database.xlsx')
+    box.upload(LOCAL_FILE, REMOTE_FILE)
