@@ -23,6 +23,17 @@ def apply_formatting(data, ws):
         yield d
 
 
+# Sets column C to justify left
+def final_formatting():
+    column_c = ws['C']
+    for cell in column_c:
+        cell.alignment = Alignment(
+            horizontal='left',
+            vertical='center',
+            wrap_text=True
+        )
+
+
 def parse_content(url):
     r = requests.get(url)
     soup = bs(r.text, 'html.parser')
