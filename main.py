@@ -76,13 +76,15 @@ def acquire_links(subject):
 
     # If there are links, pull the raw HTML
     html = gmail.get_html(ids)
-    e_soup = bs(html, 'html.parser')
 
-    # Adds correct links to a masterlist
     links = []
-    for link in e_soup.find_all('a'):
-        if 'tvbizz.net/newsitemsocial' in link.get('href'):
-            links.append(link.get('href'))
+    for email in html:
+        e_soup = bs(email, 'html.parser')
+
+        # Adds correct links to a masterlist
+        for link in e_soup.find_all('a'):
+            if 'tvbizz.net/newsitemsocial' in link.get('href'):
+                links.append(link.get('href'))
 
     # Move the email once we have finished
     gmail.move(ids, '[Google Mail]/All Mail')

@@ -26,12 +26,14 @@ class EmailConnect:
         return self.client.search(self.search)
 
     def get_html(self, email_id):
+        data = []
         for uid, message_data in self.client.fetch(email_id, 'RFC822').items():
             email_message = email.message_from_bytes(message_data[b'RFC822'])
 
             for part in email_message.walk():
                 if part.get_content_type() == 'text/html':
-                    return part.get_payload(decode=True)
+                    data.append(part.get_payload(decode=True))
+        return data
 
     def delete(self, ids):
         self.client.delete_messages(ids)
