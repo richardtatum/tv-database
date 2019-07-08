@@ -6,12 +6,13 @@ from openpyxl.cell.cell import Cell
 from services import EmailConnect, Dropbox
 import requests
 import os
+import time
 
 LOCAL_FILE = 'data/International Format Tracker.xlsx'
 REMOTE_FILE = '/International Format Tracker.xlsx'
 
 # Applies formatting to the data to match the sheet
-def apply_formatting(data, ws):
+def apply_formatting(data):
     for d in data:
         d = Cell(ws, column='A', row=1, value=d)
         d.font = Font(name='Calibri', size=9)
@@ -44,7 +45,7 @@ def parse_content(url):
 
     # Format the date to requested style
     try:
-        datetime.strptime(link_data[0], '%d/%m/%Y').strftime('%d/%m/%y')
+        time = datetime.strptime(link_data[0], '%d/%m/%Y').strftime('%d/%m/%y')
     except ValueError:
         time = date.today().strftime('%d/%m/%y')
 
@@ -54,7 +55,7 @@ def parse_content(url):
     data.append(soup.find('div', class_='profile_tweet_content').get_text())
 
     # Pass data to worksheet
-    ws.append(apply_formatting(data, ws))
+    ws.append(apply_formatting(data))
 
 
 # Removes duplicates whilst maintaining order
@@ -93,11 +94,6 @@ def acquire_links(subject):
 
 
 if __name__ == '__main__':
-    # Load the document and worksheet
-    wb = load_workbook('data/International Format Tracker.xlsx')
-    ws = wb['TV BIZZ']
-    print('Loading worksheet.')
-
     # Create a gmail instance and login
     gmail = EmailConnect(
         os.getenv('IMAP_HOST'),
@@ -106,18 +102,33 @@ if __name__ == '__main__':
     )
 
     # Same for Dropbox
-    # box = Dropbox(os.getenv('DBX_TOKEN'))
+    box = Dropbox(os.getenv('DBX_TOKEN'))
     box.download(LOCAL_FILE, REMOTE_FILE)
 
+    # Load the document and worksheet
     wb = load_workbook(LOCAL_FILE)
+    ws = wb['TV BIZZ']
+    print('Loading file.')
+
     # Aquire all the data from each link and add it to the file
     link_list = acquire_links('Latest headlines on TVBIZZ')
     for url in link_list:
         parse_content(url)
     print(f'Added data from {len(link_list)} links.')
 
-    # Save the new file
-    wb.save('data/International Format Tracker.xlsx')
+    # Terminate gmail connection
+    gmail.logout()
+
+    # Apply formatting
+    final_formatting()
+    print('Applying final formatting.')
+    
+    # Save the file
+    wb.save(LOCAL_FILE)
+    print('File saved.')
+
+    # Sleep to make sure file is correctly saved before uploading
+    time.sleep(0.5)
 
     # Upload to dropbox
     box.upload(LOCAL_FILE, REMOTE_FILE)
