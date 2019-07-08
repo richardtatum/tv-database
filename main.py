@@ -73,8 +73,8 @@ def acquire_links(subject):
         if 'tvbizz.net/newsitemsocial' in link.get('href'):
             links.append(link.get('href'))
 
-    # Delete the email once we have finished
-    # gmail.delete(ids)
+    # Move the email once we have finished
+    gmail.move(ids, '[Google Mail]/All Mail')
 
     return remove_duplicates(links)
 
