@@ -22,6 +22,7 @@ class EmailConnect:
     def get_id_by_subject(self, subject, folder='INBOX'):
         self.client.select_folder(folder)
         self.search = ['SUBJECT', subject]
+        print(f'{len(self.search)} email/s found.')
         return self.client.search(self.search)
 
     def get_html(self, email_id):
@@ -64,4 +65,3 @@ class Dropbox:
             print(f'Lookup error: {err}')
             print('Skipping...')
             pass
-
