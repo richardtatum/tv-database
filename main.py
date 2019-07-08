@@ -21,13 +21,6 @@ def apply_formatting(data, ws):
         yield d
 
 
-def insert_data(data):
-    wb = load_workbook('data/database.xlsx')
-    ws = wb.active
-    ws.append(apply_formatting(data, ws))
-    wb.save('data/database.xlsx')
-
-
 def parse_content(url):
     r = requests.get(url)
     soup = bs(r.text, 'html.parser')
@@ -48,7 +41,7 @@ def parse_content(url):
     data.append(soup.find('div', class_='profile_tweet_content').get_text())
 
     # Pass data to worksheet
-    insert_data(data)
+    ws.append(apply_formatting(data, ws))
 
 
 # Removes duplicates whilst maintaining order
@@ -68,7 +61,7 @@ def acquire_links(subject):
         gmail.logout()
         exit()
 
-    # Pull the raw HTML
+    # If there are links, pull the raw HTML
     html = gmail.get_html(ids)
     e_soup = bs(html, 'html.parser')
 
@@ -79,12 +72,17 @@ def acquire_links(subject):
             links.append(link.get('href'))
 
     # Delete the email once we have finished
-    gmail.delete(ids)
+    # gmail.delete(ids)
 
     return remove_duplicates(links)
 
 
 if __name__ == '__main__':
+    # Load the document and worksheet
+    wb = load_workbook('data/International Format Tracker.xlsx')
+    ws = wb['TV BIZZ']
+    print('Loading worksheet.')
+
     # Create a gmail instance and login
     gmail = EmailConnect(
         os.getenv('IMAP_HOST'),
@@ -93,12 +91,17 @@ if __name__ == '__main__':
     )
 
     # Same for Dropbox
-    box = Dropbox(os.getenv('DBX_TOKEN'))
-    box.download('data/database.xlsx', '/database.xlsx')
+    # box = Dropbox(os.getenv('DBX_TOKEN'))
+    # box.download('data/database.xlsx', '/database.xlsx')
 
+    # Aquire all the data from each link and add it to the file
     link_list = acquire_links('Latest headlines on TVBIZZ')
     for url in link_list:
         parse_content(url)
     print(f'Added data from {len(link_list)} links.')
 
-    box.upload('data/database.xlsx', '/database.xlsx')
+    # Save the new file
+    wb.save('data/International Format Tracker.xlsx')
+
+    # Upload to dropbox
+    # box.upload('data/database.xlsx', '/database.xlsx')
