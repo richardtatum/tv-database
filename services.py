@@ -35,6 +35,10 @@ class EmailConnect:
                     data.append(part.get_payload(decode=True))
         return data
 
+    def move(self, email_id, folder):
+        self.client.move(email_id, folder)
+        print(f'Moved {len(email_id)} message/s to {folder}.')
+
     def delete(self, ids):
         self.client.delete_messages(ids)
         print(f'{len(ids)} message/s deleted.')
@@ -57,12 +61,12 @@ class Dropbox:
     def upload(self, local, remote):
         with open(local, 'rb') as f:
             self.client.files_upload(f.read(), remote, mode=dropbox.files.WriteMode.overwrite)
-        print(f'File {local} uploaded to {remote}.')
+        print(f'File <{local}> uploaded to <{remote}>.')
 
     def download(self, local, remote):
         try:
             self.client.files_download_to_file(local, remote)
-            print(f'File {remote} downloaded to {local}.')
+            print(f'File <{remote}> downloaded to <{local}>.')
         except dropbox.exceptions.ApiError as err:
             print(f'Lookup error: {err}')
             print('Skipping...')
