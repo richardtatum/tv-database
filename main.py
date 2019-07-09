@@ -14,7 +14,7 @@ LOCAL_FILE = 'data/International Format Tracker.xlsx'
 REMOTE_FILE = '/International Format Tracker.xlsx'
 
 # Logging Handler
-log_format = logging.Formatter('%(asctime)s %(name)s %(levelname)s: %(message)s', '%Y-%m-%d | %H:%M:%S:')
+log_format = logging.Formatter('%(asctime)s | %(name)s %(levelname)s: %(message)s', '%Y-%m-%d %H:%M:%S')
 handler = TimedRotatingFileHandler(
     'logs/database.log',
     when='D',
@@ -140,7 +140,7 @@ if __name__ == '__main__':
 
     # Apply formatting
     final_formatting()
-   
+
     # Save the file
     wb.save(LOCAL_FILE)
     logger.info('File saved.')
