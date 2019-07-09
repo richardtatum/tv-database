@@ -3,16 +3,33 @@ from datetime import datetime, date
 from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.cell.cell import Cell
+import logging
 from services import EmailConnect, Dropbox
 import requests
 import os
 import time
+from logging.handlers import TimedRotatingFileHandler
 
+# Logging
 LOCAL_FILE = 'data/International Format Tracker.xlsx'
 REMOTE_FILE = '/International Format Tracker.xlsx'
 
+log_format = logging.Formatter('%(asctime)s %(name)s %(levelname)s: %(message)s', '%Y-%m-%d | %H:%M:%S:')
+handler = TimedRotatingFileHandler(
+    'logs/database.log',
+    when='D',
+    interval=7,
+    backupCount=10,
+)
+handler.setFormatter(log_format)
+logger = logging.getLogger()
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
+
+
 # Applies formatting to the data to match the sheet
 def apply_formatting(data):
+    logger.info('Matching formatting to worksheet')
     for d in data:
         d = Cell(ws, column='A', row=1, value=d)
         d.font = Font(name='Calibri', size=9)
@@ -26,6 +43,7 @@ def apply_formatting(data):
 
 # Sets column C to justify left
 def final_formatting():
+    logger.info('Applying final formatting')
     column_c = ws['C']
     for cell in column_c:
         cell.alignment = Alignment(
@@ -60,6 +78,7 @@ def parse_content(url):
 
 # Removes duplicates whilst maintaining order
 def remove_duplicates(list_w_duplicates):
+    app.logger('Removing duplicates')
     return list(dict.fromkeys(list_w_duplicates))
 
 
@@ -70,8 +89,8 @@ def acquire_links(subject):
 
     # If no ID's are returned, logout and exit
     if len(ids) < 1:
-        print(f'No emails found matching the requested subject <{subject}>.')
-        print('Exiting...')
+        logger.info(f'No emails found matching the requested subject <{subject}>.')
+        logger.info('Exiting...')
         gmail.logout()
         exit()
 
@@ -108,24 +127,23 @@ if __name__ == '__main__':
     # Load the document and worksheet
     wb = load_workbook(LOCAL_FILE)
     ws = wb['TV BIZZ']
-    print('Loading file.')
+    logger.info('Loading file.')
 
     # Aquire all the data from each link and add it to the file
     link_list = acquire_links('Latest headlines on TVBIZZ')
     for url in link_list:
         parse_content(url)
-    print(f'Added data from {len(link_list)} links.')
+    logger.info(f'Added data from {len(link_list)} links.')
 
     # Terminate gmail connection
     gmail.logout()
 
     # Apply formatting
     final_formatting()
-    print('Applying final formatting.')
-    
+   
     # Save the file
     wb.save(LOCAL_FILE)
-    print('File saved.')
+    logger.info('File saved.')
 
     # Sleep to make sure file is correctly saved before uploading
     time.sleep(0.5)
