@@ -10,10 +10,10 @@ import os
 import time
 from logging.handlers import TimedRotatingFileHandler
 
-# Logging
 LOCAL_FILE = 'data/International Format Tracker.xlsx'
 REMOTE_FILE = '/International Format Tracker.xlsx'
 
+# Logging Handler
 log_format = logging.Formatter('%(asctime)s %(name)s %(levelname)s: %(message)s', '%Y-%m-%d | %H:%M:%S:')
 handler = TimedRotatingFileHandler(
     'logs/database.log',
