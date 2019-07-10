@@ -78,7 +78,7 @@ def parse_content(url):
 
 # Removes duplicates whilst maintaining order
 def remove_duplicates(list_w_duplicates):
-    app.logger('Removing duplicates')
+    logger.info('Removing duplicates')
     return list(dict.fromkeys(list_w_duplicates))
 
 
