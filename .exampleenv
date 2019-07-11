@@ -1,0 +1,4 @@
+IMAP_HOST=''
+IMAP_USER=''
+APP_PASS=''
+DBX_TOKEN=''
