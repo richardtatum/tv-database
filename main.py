@@ -150,3 +150,5 @@ if __name__ == '__main__':
 
     # Upload to dropbox
     box.upload(LOCAL_FILE, REMOTE_FILE)
+
+    exit()
