@@ -1,4 +1,4 @@
-# tv_database
+# tv-database
 Hooks into email via IMAP, scrapes links from a newsletter based on a subject line search, then formats that data into an excel spreadsheet which is uploaded to Dropbox.
 
 ## Prerequisites
